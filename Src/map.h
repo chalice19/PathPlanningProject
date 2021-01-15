@@ -15,7 +15,7 @@
 
 //Map is NOT to be modified during the search. It should be passed as a const pointer.
 //Think of it as an "independent" piece of data that is managed by outer (non-search related) proccesses.
-//Search algorithm should create it own object/structures needed to run the search on that map.
+//Search algorithm should create its own object/structures needed to run the search on that map.
 
 class Map
 {
@@ -35,11 +35,15 @@ class Map
         bool CellIsTraversable (int i, int j) const;
         bool CellOnGrid (int i, int j) const;
         bool CellIsObstacle(int i, int j) const;
-        int  getValue(int i, int j) const;
+        int getValue(int i, int j) const;
         int getMapHeight() const;
         int getMapWidth() const;
         double getCellSize() const;
 
+        int get_start_i() const;
+        int get_start_j() const;
+        int get_goal_i() const;
+        int get_goal_j() const;
 };
 
 #endif

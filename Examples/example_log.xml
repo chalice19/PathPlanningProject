@@ -51,8 +51,8 @@
         <logfilename/>
     </options>
     <log>
-        <mapfilename>../example/example.xml</mapfilename>
-        <summary numberofsteps="0" nodescreated="0" length="0" length_scaled="0" time="0.000000"/>
+        <mapfilename>../../Examples/example.xml</mapfilename>
+        <summary numberofsteps="32601" nodescreated="1641957613" length="3.0769712e-41" length_scaled="7.38473080311464e-40" time="0.000000"/>
         <path>Path NOT found!</path>
         <lplevel/>
         <hplevel/>
