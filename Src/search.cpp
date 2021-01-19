@@ -19,22 +19,22 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     open_list.push_back(start);
 
     while (!open_list.empty()) {
-        double lowest_g = open_list[0].g;
-        size_t current_node_index = 0;
-        for (size_t i = 1; i < open_list.size(); ++i) {
-            if (open_list[i].g < lowest_g) {
-                lowest_g = open_list[i].g;
-                current_node_index = i;
+        double lowest_g = open_list.begin()->g;
+        auto current_node_iterator = open_list.begin();
+        Node *current_node = &(*current_node_iterator);
+        for (auto it = open_list.begin(); it != open_list.end(); ++it) {
+            if (it->g < lowest_g) {
+                lowest_g = it->g;
+                current_node_iterator = it;
+                current_node = &(*it);
             }
         }
 
-        close_list.push_back(open_list[current_node_index]);
-        open_list.erase(open_list.begin() + current_node_index);
-        current_node_index = close_list.size() - 1;
-        Node current_node = close_list[current_node_index];
+        close_list.push_back(*current_node);
+        open_list.erase(current_node_iterator);
 
-        if (current_node.i == goal_i && current_node.j == goal_j) {
-            makePrimaryPath(current_node);
+        if (current_node->i == goal_i && current_node->j == goal_j) {
+            makePrimaryPath(*current_node);
 
             sresult.pathfound = 1;
             sresult.nodescreated = open_list.size() + close_list.size();
@@ -45,30 +45,30 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
             return sresult;
         }
 
-        std::vector<Node> successors = get_successors(current_node, map);
+        std::vector<Node> successors = get_successors(*current_node, map);
         for (Node node : successors) {
             bool found = false;
-            for (size_t i = 0; i < close_list.size(); ++i) {
-                if (close_list[i].i == node.i && close_list[i].j == node.j) {
+            for (const Node& closed : close_list) {
+                if (closed.i == node.i && closed.j == node.j) {
                     found = true;
                 }
             }
             if (found) continue;
 
-            for (size_t i = 0; i < open_list.size(); ++i) {
-                if (open_list[i].i == node.i && open_list[i].j == node.j) {
-                    if (open_list[i].g > current_node.g + map.getCellSize()) {
-                        open_list[i].g = current_node.g + map.getCellSize();
-                        open_list[i].parent = &current_node;
+            for (Node& opened : open_list) {
+                if (opened.i == node.i && opened.j == node.j) {
+                    if (opened.g > current_node->g + map.getCellSize()) {
+                        opened.g = current_node->g + map.getCellSize();
+                        opened.parent = current_node;
                     }
                     found = true;
                 }
             }
 
             if (!found) {
-                node.parent = &current_node;
-                node.g = current_node.g + map.getCellSize();
-                open_list.push_back(node);
+                open_list.emplace_back(Node {node.i, node.j, 0,
+                                             current_node->g + map.getCellSize(),
+                                             0, current_node});
             }
         }
     }
