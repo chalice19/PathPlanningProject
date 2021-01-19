@@ -38,8 +38,8 @@ class Search
 
         //CODE HERE to define other members of the class
 
-        std::list<Node> open_list;
-        std::list<Node> close_list;
+        std::list<Node *> open_list;
+        std::list<Node *> close_list;
 
         std::vector<Node> get_successors(Node &node, const Map &map) const;
         void makePrimaryPath(Node curNode);
