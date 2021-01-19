@@ -99,38 +99,22 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
 std::vector<Node> Search::get_successors(Node &node, const Map &map) const
 {
-    std::vector<Node> succs;
+    std::vector<Node> successors;
     int i = node.i;
     int j = node.j;
     if (i - 1 >= 0) {
-        succs.emplace_back(Node {i - 1, j, 0, 0, 0, NULL});
+        successors.emplace_back(Node {i - 1, j, 0, 0, 0, NULL});
     }
     if (i + 1 < map.getMapHeight()) {
-        succs.emplace_back(Node {i + 1, j, 0, 0, 0, NULL});
+        successors.emplace_back(Node {i + 1, j, 0, 0, 0, NULL});
     }
     if (j - 1 >= 0) {
-        succs.emplace_back(Node {i, j - 1, 0, 0, 0, NULL});
+        successors.emplace_back(Node {i, j - 1, 0, 0, 0, NULL});
     }
     if (j + 1 < map.getMapWidth()) {
-        succs.emplace_back(Node {i, j + 1, 0, 0, 0, NULL});
+        successors.emplace_back(Node {i, j + 1, 0, 0, 0, NULL});
     }
-    return succs;
-//    for (int i = node.i - 1; i <= node.i + 1; ++i) {
-//        for (int j = node.j - 1; j <= node.j + 1; ++j) {
-//            if (i < 0 || i > map.getMapWidth()) {
-//                continue;
-//            }
-//            if (j < 0 || j > map.getMapHeight()) {
-//                continue;
-//            }
-//            if (i == node.i && j == node.j) {
-//                continue;
-//            }
-//            Node succ = {i, j, 0, 0, 0, NULL};
-//            succs.push_back(succ);
-//        }
-//    }
-//    return succs;
+    return successors;
 }
 
 
