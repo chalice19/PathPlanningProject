@@ -49,11 +49,13 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
             sresult.pathfound = 1;
             sresult.nodescreated = open_list.size() + close_list.size();
-            sresult.numberofsteps = -1;
+            sresult.numberofsteps = close_list.size();
             sresult.time = -1;
             //sresult.hppath = &hppath; //Here is a constant pointer
             sresult.lppath = &lppath;
-            return sresult;
+            sresult.pathlength = lppath.size();
+
+            break;
         }
 
         std::vector<Node> successors = get_successors(*current_node, map);
@@ -87,12 +89,6 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
         }
     }
 
-    sresult.pathfound = 0;
-    sresult.nodescreated =  0;
-    sresult.numberofsteps = 0;
-    sresult.time = 0;
-    //sresult.hppath = &hppath; //Here is a constant pointer
-    //sresult.lppath = &lppath;
     return sresult;
 }
 
@@ -103,7 +99,7 @@ std::vector<Node> Search::get_successors(Node &node, const Map &map) const
     int i = node.i;
     int j = node.j;
     if (i - 1 >= 0) {
-        successors.emplace_back(Node {i - 1, j, 0, 0, 0, NULL});
+        successors.emplace_back(Node {.i = i - 1, .j = j, .F = 0, .g = 0, .H = 0, .parent = NULL});
     }
     if (i + 1 < map.getMapHeight()) {
         successors.emplace_back(Node {i + 1, j, 0, 0, 0, NULL});
