@@ -38,7 +38,7 @@
     </map>
     <algorithm>
         <searchtype>astar</searchtype>
-        <metrictype>diagonal</metrictype>
+        <metrictype>manhattan</metrictype>
         <breakingties>g-max</breakingties>
         <hweight>1</hweight>
         <allowdiagonal>true</allowdiagonal>
@@ -52,7 +52,7 @@
     </options>
     <log>
         <mapfilename>../../Examples/example.xml</mapfilename>
-        <summary numberofsteps="514" nodescreated="524" length="38" length_scaled="912" time="-1.000000"/>
+        <summary numberofsteps="381" nodescreated="409" length="38" length_scaled="912" time="-1.000000"/>
         <path>
             <row number="0">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="1">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>

@@ -44,5 +44,7 @@ class Search
 
         std::vector<int> get_successors(Node &node, const Map &map) const;
         void makePrimaryPath(Node curNode);
+
+        double get_distance(int x, int y, int type) const;
 };
 #endif

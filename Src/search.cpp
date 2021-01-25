@@ -16,14 +16,19 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     int goal_i = map.get_goal_i();
     int goal_j = map.get_goal_j();
 
+    start.H = get_distance(std::abs(start.i - goal_i),
+                           std::abs(start.j - goal_j),
+                           options.metrictype);
+    start.F = start.H;
+
     open_list.push_back(start);
 
     while (!open_list.empty()) {
-        double lowest_g = open_list.begin()->g;
+        double lowest_f = open_list.begin()->F;
         auto current_node_iterator = open_list.begin();
         for (auto it = open_list.begin(); it != open_list.end(); ++it) {
-            if (it->g < lowest_g) {
-                lowest_g = it->g;
+            if (it->F < lowest_f) {
+                lowest_f = it->F;
                 current_node_iterator = it;
             }
         }
@@ -41,9 +46,6 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
             sresult.pathlength = lppath.size();
             sresult.lppath = &lppath;
             sresult.hppath = &hppath;
-            sresult.nodescreated = open_list.size() + close_list.size();
-            sresult.numberofsteps = close_list.size();
-            sresult.time = -1;
 
             break;
         }
@@ -60,8 +62,9 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
             for (Node& opened : open_list) {
                 if (opened.i == node_i && opened.j == node_j) {
-                    if (opened.g > current_node->g + map.getCellSize()) {
-                        opened.g = current_node->g + map.getCellSize();
+                    if (opened.g > current_node->g + 1) {
+                        opened.g = current_node->g + 1;
+                        opened.F = opened.g + opened.H;
                         opened.parent = current_node;
                     }
                     found = true;
@@ -69,12 +72,19 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
             }
 
             if (!found) {
-                open_list.emplace_back(Node {.i = node_i, .j = node_j, .F = 0,
-                                             .g = current_node->g + map.getCellSize(),
-                                             .H = 0, .parent = current_node});
+                int dx = std::abs(node_i - goal_i);
+                int dy = std::abs(node_j - goal_j);
+                double h = get_distance(dx, dy, options.metrictype);
+                double g = current_node->g + 1;
+                open_list.emplace_back(Node {.i = node_i, .j = node_j, .F = g + h,
+                                             .g = g, .H = h, .parent = current_node});
             }
         }
     }
+
+    sresult.nodescreated = open_list.size() + close_list.size();
+    sresult.numberofsteps = close_list.size();
+    sresult.time = -1;
 
     return sresult;
 }
@@ -115,3 +125,19 @@ void Search::makePrimaryPath(Node curNode)
 {
     //need to implement
 }*/
+
+
+double Search::get_distance(int x, int y, int type) const
+{
+    if (type == CN_SP_MT_EUCL)
+        return std::sqrt(x * x + y * y);
+
+    if (type == CN_SP_MT_MANH)
+        return x + y;
+
+    if (type == CN_SP_MT_CHEB)
+        return std::max(x, y);
+
+    if (type == CN_SP_MT_DIAG)
+        return std::abs(x - y) + std::min(x, y);
+}
