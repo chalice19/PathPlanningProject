@@ -44,6 +44,8 @@ class Map
         int get_start_j() const;
         int get_goal_i() const;
         int get_goal_j() const;
+
+        int get_global_index(int i, int j) const;
 };
 
 #endif

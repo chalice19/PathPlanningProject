@@ -6,6 +6,7 @@
 #include <list>
 #include <vector>
 #include <math.h>
+#include <map>
 #include <limits>
 #include <chrono>
 #include <iterator>
@@ -38,10 +39,10 @@ class Search
 
         //CODE HERE to define other members of the class
 
-        std::list<Node *> open_list;
-        std::list<Node *> close_list;
+        std::list<Node> open_list;
+        std::unordered_map<int, Node> close_list;
 
-        std::vector<Node> get_successors(Node &node, const Map &map) const;
+        std::vector<int> get_successors(Node &node, const Map &map) const;
         void makePrimaryPath(Node curNode);
 };
 #endif
