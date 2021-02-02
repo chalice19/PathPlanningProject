@@ -10,6 +10,7 @@
 #include <limits>
 #include <chrono>
 #include <iterator>
+#include <ctime>
 
 class Search
 {
@@ -17,6 +18,8 @@ class Search
         Search();
         ~Search(void);
         SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options);
+
+        void setSearchType(int type);
 
     protected:
         //CODE HERE
@@ -35,16 +38,19 @@ class Search
         //and only then begin enhancement!
 
         SearchResult                    sresult; //This will store the search result
-        std::list<Node>                 lppath, hppath; //
+        std::list<Node>                 lppath, hppath;
 
         //CODE HERE to define other members of the class
 
-        std::list<Node> open_list;
-        std::unordered_map<int, Node> close_list;
+        int                             search_type;
+
+        std::list<Node>                 open_list;
+        std::unordered_map<int, Node>   close_list;
 
         std::vector<int> get_successors(Node &node, const Map &map) const;
-        void makePrimaryPath(Node curNode);
+        void makePrimaryPath(Node& curNode);
+        void makeSecondaryPath();   // uses lppath, so it should be called after makePrimaryPath()
 
-        double get_distance(int x, int y, int type) const;
+        double calculate_heuristic(int x, int y, int type) const;
 };
 #endif

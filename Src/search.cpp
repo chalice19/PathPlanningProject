@@ -2,21 +2,27 @@
 
 Search::Search()
 {
-//set defaults here
+    search_type = CN_SP_ST_DIJK;
 }
 
-Search::~Search() {
+Search::~Search() {}
+
+
+void Search::setSearchType(int type) {
+    search_type = type;
 }
 
 
 SearchResult Search::startSearch(ILogger *Logger, const Map &map, const EnvironmentOptions &options)
 {
+    auto time_start = std::chrono::high_resolution_clock::now();
+
     Node start{.i = map.get_start_i(), .j = map.get_start_j(),
                .F = 0, .g = 0, .H = 0, .parent = nullptr};
     int goal_i = map.get_goal_i();
     int goal_j = map.get_goal_j();
 
-    start.H = get_distance(std::abs(start.i - goal_i),
+    start.H = calculate_heuristic(std::abs(start.i - goal_i),
                            std::abs(start.j - goal_j),
                            options.metrictype);
     start.F = start.H;
@@ -41,6 +47,7 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
         if (current_node->i == goal_i && current_node->j == goal_j) {
             makePrimaryPath(*current_node);
+            makeSecondaryPath();
 
             sresult.pathfound = true;
             sresult.pathlength = lppath.size();
@@ -68,13 +75,14 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
                         opened.parent = current_node;
                     }
                     found = true;
+                    break;
                 }
             }
 
             if (!found) {
                 int dx = std::abs(node_i - goal_i);
                 int dy = std::abs(node_j - goal_j);
-                double h = get_distance(dx, dy, options.metrictype);
+                double h = calculate_heuristic(dx, dy, options.metrictype);
                 double g = current_node->g + 1;
                 open_list.emplace_back(Node {.i = node_i, .j = node_j, .F = g + h,
                                              .g = g, .H = h, .parent = current_node});
@@ -84,7 +92,10 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
     sresult.nodescreated = open_list.size() + close_list.size();
     sresult.numberofsteps = close_list.size();
-    sresult.time = -1;
+
+    auto time_finish = std::chrono::high_resolution_clock::now();
+    auto time = std::chrono::duration_cast<std::chrono::microseconds>(time_finish - time_start);
+    sresult.time = time.count() / 1000000.;
 
     return sresult;
 }
@@ -111,7 +122,7 @@ std::vector<int> Search::get_successors(Node &node, const Map &map) const
 }
 
 
-void Search::makePrimaryPath(Node curNode)
+void Search::makePrimaryPath(Node& curNode)
 {
     lppath.push_back(curNode);
     while (curNode.parent) {
@@ -121,14 +132,41 @@ void Search::makePrimaryPath(Node curNode)
 }
 
 
-/*void Search::makeSecondaryPath()
+void Search::makeSecondaryPath()
 {
-    //need to implement
-}*/
+    if (lppath.empty()) return;
+
+    hppath.push_back(*lppath.begin());
+    hppath.push_back(*(--lppath.end()));
+    if (lppath.size() < 3) return;
+
+    auto prev = ++lppath.begin();
+    int di_prev = prev->i - lppath.begin()->i;
+    int dj_prev = prev->j - lppath.begin()->j;
+
+    auto it = prev;
+    ++it;
+    for (; it != lppath.end(); ++it) {
+        int di = it->i - prev->i;
+        int dj = it->j - prev->j;
+
+        if (di != di_prev || dj != dj_prev) {
+            hppath.push_back(*prev);
+        }
+
+        di_prev = di;
+        dj_prev = dj;
+        prev = it;
+    }
+}
 
 
-double Search::get_distance(int x, int y, int type) const
+double Search::calculate_heuristic(int x, int y, int type) const
 {
+    if (search_type == CN_SP_ST_DIJK)
+        return 0;
+
+
     if (type == CN_SP_MT_EUCL)
         return std::sqrt(x * x + y * y);
 
@@ -139,5 +177,7 @@ double Search::get_distance(int x, int y, int type) const
         return std::max(x, y);
 
     if (type == CN_SP_MT_DIAG)
-        return std::abs(x - y) + std::min(x, y);
+        return std::abs(x - y) + std::sqrt(2) * std::min(x, y);
+
+    return 0;
 }

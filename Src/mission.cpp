@@ -47,7 +47,7 @@ void Mission::createEnvironmentOptions()
 
 void Mission::createSearch()
 {
-//might be helpful in case numerous algorithms are added
+    search.setSearchType(config.SearchParams[CN_SP_ST]);
 }
 
 void Mission::startSearch()
