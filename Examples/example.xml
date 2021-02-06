@@ -38,7 +38,7 @@
     </map>
     <algorithm>
         <searchtype>astar</searchtype>
-        <metrictype>manhattan</metrictype>
+        <metrictype>euclidean</metrictype>
         <breakingties>g-max</breakingties>
         <hweight>1</hweight>
         <allowdiagonal>true</allowdiagonal>
