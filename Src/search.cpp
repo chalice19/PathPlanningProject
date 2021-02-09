@@ -48,7 +48,6 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
             makeSecondaryPath();
 
             sresult.pathfound = true;
-            sresult.pathlength = lppath.size();
             sresult.lppath = &lppath;
             sresult.hppath = &hppath;
 
@@ -87,12 +86,11 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
         }
     }
 
-    sresult.nodescreated = open_list.size() + close_list.size();
-    sresult.numberofsteps = close_list.size();
-
     auto time_finish = std::chrono::high_resolution_clock::now();
     auto time = std::chrono::duration_cast<std::chrono::microseconds>(time_finish - time_start);
     sresult.time = time.count() / 1000000.;
+    sresult.nodescreated = open_list.size() + close_list.size();
+    sresult.numberofsteps = close_list.size();
 
     return sresult;
 }
@@ -147,6 +145,8 @@ void Search::makePrimaryPath(Node& curNode)
 {
     lppath.push_back(curNode);
     while (curNode.parent) {
+        sresult.pathlength += calculate_heuristic(curNode.i, curNode.j,
+                                                  curNode.parent->i, curNode.parent->j, CN_SP_MT_EUCL);
         curNode = *curNode.parent;
         lppath.push_front(curNode);
     }
@@ -158,8 +158,10 @@ void Search::makeSecondaryPath()
     if (lppath.empty()) return;
 
     hppath.push_back(*lppath.begin());
-    hppath.push_back(*(--lppath.end()));
-    if (lppath.size() < 3) return;
+    if (lppath.size() < 3) {
+        hppath.push_back(*(--lppath.end()));
+        return;
+    }
 
     auto prev = ++lppath.begin();
     int di_prev = prev->i - lppath.begin()->i;
@@ -179,6 +181,8 @@ void Search::makeSecondaryPath()
         dj_prev = dj;
         prev = it;
     }
+
+    hppath.push_back(*(--lppath.end()));
 }
 
 
@@ -213,3 +217,4 @@ bool Search::is_cell_passable(int i, int j, const Map &map) const {
     }
     return false;
 }
+
