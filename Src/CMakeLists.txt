@@ -6,6 +6,7 @@ set(HEADERS         config.h
                     map.h
                     mission.h
                     node.h
+                    node_comparator.h
                     search.h
                     searchresult.h
                     tinyxml2.h
@@ -15,6 +16,7 @@ set(SOURCES         config.cpp
                     environmentoptions.cpp
                     map.cpp
                     mission.cpp
+                    node_comparator.cpp
                     search.cpp
                     tinyxml2.cpp
                     xmllogger.cpp)

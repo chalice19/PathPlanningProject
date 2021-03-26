@@ -3,6 +3,7 @@
 #include "ilogger.h"
 #include "searchresult.h"
 #include "environmentoptions.h"
+#include "node_comparator.h"
 #include <list>
 #include <vector>
 #include <math.h>
@@ -11,6 +12,7 @@
 #include <chrono>
 #include <iterator>
 #include <ctime>
+#include <set>
 
 class Search
 {
@@ -44,14 +46,16 @@ class Search
 
         int                             search_type;
 
-        std::list<Node>                 open_list;
+        std::set<Node, NodeComparator>  open_list;
         std::unordered_map<int, Node>   close_list;
 
         std::vector<int> get_successors(Node &node, const Map& map, const EnvironmentOptions &options) const;
         void makePrimaryPath(Node& curNode);
         void makeSecondaryPath();   // uses lppath, so it should be called after makePrimaryPath()
 
-        double calculate_heuristic(int i1, int i2, int j1, int j2, int type) const;
+        double calculate_heuristic(int i1, int j1, int i2, int j2, int type) const;
+        double calculate_distance(int i1, int j1, int i2, int j2) const;
         bool is_cell_passable(int i, int j, const Map& map) const;
+        void test();
 };
 #endif

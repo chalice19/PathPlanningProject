@@ -1,9 +1,6 @@
 #include "search.h"
 
-Search::Search()
-{
-    search_type = CN_SP_ST_DIJK;
-}
+Search::Search() : search_type(CN_SP_ST_DIJK) {}
 
 Search::~Search() {}
 
@@ -26,22 +23,21 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
     start.H = calculate_heuristic(start.i, start.j, goal_i, goal_j, options.metrictype);
     start.F = start.H;
 
-    open_list.push_back(start);
+    open_list.insert(start);
 
     while (!open_list.empty()) {
-        double lowest_f = open_list.begin()->F;
-        auto current_node_iterator = open_list.begin();
-        for (auto it = open_list.begin(); it != open_list.end(); ++it) {
-            if (it->F < lowest_f) {
-                lowest_f = it->F;
-                current_node_iterator = it;
-            }
+        auto min_node = open_list.begin();
+        int index = map.get_global_index(min_node->i, min_node->j);
+
+        while (close_list.find(index) != close_list.end()) {
+            open_list.erase(min_node);
+            min_node = open_list.begin();
+            index = map.get_global_index(min_node->i, min_node->j);
         }
 
-        int index = map.get_global_index(current_node_iterator->i, current_node_iterator->j);
-        close_list[index] = *current_node_iterator;
+        close_list[index] = *min_node;
         Node *current_node = &close_list[index];
-        open_list.erase(current_node_iterator);
+        open_list.erase(min_node);
 
         if (current_node->i == goal_i && current_node->j == goal_j) {
             makePrimaryPath(*current_node);
@@ -62,27 +58,13 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map, const Environm
 
             int node_i = map_index / map.getMapWidth();
             int node_j = map_index % map.getMapWidth();
-            double edge_weight = calculate_heuristic(node_i, node_j, current_node->i, current_node->j, CN_SP_MT_EUCL);
-            bool found = false;
 
-            for (Node& opened : open_list) {
-                if (opened.i == node_i && opened.j == node_j) {
-                    if (opened.g > current_node->g + edge_weight) {
-                        opened.g = current_node->g + edge_weight;
-                        opened.F = opened.g + opened.H;
-                        opened.parent = current_node;
-                    }
-                    found = true;
-                    break;
-                }
-            }
+            double edge_weight = calculate_distance(node_i, node_j, current_node->i, current_node->j);
+            double h = calculate_heuristic(node_i, node_j, goal_i, goal_j, options.metrictype);
+            double g = current_node->g + edge_weight;
 
-            if (!found) {
-                double h = calculate_heuristic(node_i, node_j, goal_i, goal_j, options.metrictype);
-                double g = current_node->g + edge_weight;
-                open_list.emplace_back(Node {.i = node_i, .j = node_j, .F = g + h,
-                                             .g = g, .H = h, .parent = current_node});
-            }
+            open_list.emplace(Node {.i = node_i, .j = node_j, .F = g + h,
+                                         .g = g, .H = h, .parent = current_node});
         }
     }
 
@@ -145,8 +127,8 @@ void Search::makePrimaryPath(Node& curNode)
 {
     lppath.push_back(curNode);
     while (curNode.parent) {
-        sresult.pathlength += calculate_heuristic(curNode.i, curNode.j,
-                                                  curNode.parent->i, curNode.parent->j, CN_SP_MT_EUCL);
+        sresult.pathlength += calculate_distance(curNode.i, curNode.j,
+                                                 curNode.parent->i, curNode.parent->j);
         curNode = *curNode.parent;
         lppath.push_front(curNode);
     }
@@ -209,6 +191,19 @@ double Search::calculate_heuristic(int i1, int j1, int i2, int j2, int type) con
     return 0;
 }
 
+double Search::calculate_distance(int i1, int j1, int i2, int j2) const {
+    int dx = std::abs(i1 - i2);
+    int dy = std::abs(j1 - j2);
+
+    if (dx == 0) {
+        return dy;
+    } else if (dy == 0) {
+        return dx;
+    } else {
+        return std::sqrt(dx * dx + dy * dy);
+    }
+}
+
 bool Search::is_cell_passable(int i, int j, const Map &map) const {
     if (i >= 0 && i < map.getMapHeight() &&
         j >= 0 && j < map.getMapWidth() &&
@@ -217,4 +212,5 @@ bool Search::is_cell_passable(int i, int j, const Map &map) const {
     }
     return false;
 }
+
 
