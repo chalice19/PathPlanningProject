@@ -37,11 +37,11 @@
         </grid>
     </map>
     <algorithm>
-        <searchtype>astar</searchtype>
+        <searchtype>sipp</searchtype>
         <metrictype>euclidean</metrictype>
         <breakingties>g-max</breakingties>
         <hweight>1</hweight>
-        <allowdiagonal>false</allowdiagonal>
+        <allowdiagonal>true</allowdiagonal>
         <cutcorners>true</cutcorners>
         <allowsqueeze>true</allowsqueeze>
     </algorithm>
@@ -51,16 +51,16 @@
         <logfilename/>
     </options>
     <log>
-        <mapfilename>../../Examples/example.xml</mapfilename>
-        <summary numberofsteps="409" nodescreated="430" length="37" length_scaled="888" time="0.000379"/>
+        <mapfilename>../../Examples/example_sipp.xml</mapfilename>
+        <summary numberofsteps="519" nodescreated="528" length="37" length_scaled="888" time="0.001763"/>
         <path>
             <row number="0">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="1">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="2">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="3">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
-            <row number="4">0 0 0 * * * * * * * * 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
-            <row number="5">0 0 0 * 1 1 1 1 1 1 * * 0 0 0 0 1 1 1 1 1 1 1 0 0 </row>
-            <row number="6">0 0 0 * 1 1 1 1 1 1 0 * * 0 0 0 1 1 1 1 1 1 1 0 0 </row>
+            <row number="4">0 0 0 * * * * * * * * * * 0 0 0 0 0 0 0 0 0 0 0 0 </row>
+            <row number="5">0 0 0 * 1 1 1 1 1 1 0 0 * 0 0 0 1 1 1 1 1 1 1 0 0 </row>
+            <row number="6">0 0 0 * 1 1 1 1 1 1 0 0 * 0 0 0 1 1 1 1 1 1 1 0 0 </row>
             <row number="7">0 0 0 * 1 1 1 1 1 1 0 0 * 0 0 0 1 1 1 1 1 1 1 0 0 </row>
             <row number="8">0 0 0 * 1 1 1 1 1 1 0 0 0 0 0 0 1 1 1 1 1 1 1 0 0 </row>
             <row number="9">0 0 0 * * * * * * * 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 </row>
@@ -114,9 +114,9 @@
             <node x="8" y="4" number="30"/>
             <node x="9" y="4" number="31"/>
             <node x="10" y="4" number="32"/>
-            <node x="10" y="5" number="33"/>
-            <node x="11" y="5" number="34"/>
-            <node x="11" y="6" number="35"/>
+            <node x="11" y="4" number="33"/>
+            <node x="12" y="4" number="34"/>
+            <node x="12" y="5" number="35"/>
             <node x="12" y="6" number="36"/>
             <node x="12" y="7" number="37"/>
         </lplevel>
@@ -126,12 +126,8 @@
             <section number="2" start.x="9" start.y="15" finish.x="9" finish.y="9" length="6"/>
             <section number="3" start.x="9" start.y="9" finish.x="3" finish.y="9" length="6"/>
             <section number="4" start.x="3" start.y="9" finish.x="3" finish.y="4" length="5"/>
-            <section number="5" start.x="3" start.y="4" finish.x="10" finish.y="4" length="7"/>
-            <section number="6" start.x="10" start.y="4" finish.x="10" finish.y="5" length="1"/>
-            <section number="7" start.x="10" start.y="5" finish.x="11" finish.y="5" length="1"/>
-            <section number="8" start.x="11" start.y="5" finish.x="11" finish.y="6" length="1"/>
-            <section number="9" start.x="11" start.y="6" finish.x="12" finish.y="6" length="1"/>
-            <section number="10" start.x="12" start.y="6" finish.x="12" finish.y="7" length="1"/>
+            <section number="5" start.x="3" start.y="4" finish.x="12" finish.y="4" length="9"/>
+            <section number="6" start.x="12" start.y="4" finish.x="12" finish.y="7" length="3"/>
         </hplevel>
     </log>
 </root>

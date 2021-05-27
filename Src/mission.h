@@ -35,6 +35,7 @@ class Mission
         
     private:
         Map                     map;
+        SafeIntervals           safe_intervals;
         Config                  config;
         EnvironmentOptions      options;
         Search                  search;

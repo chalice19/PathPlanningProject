@@ -1,5 +1,6 @@
 
-set(HEADERS         config.h
+set(HEADERS         A_star.h
+                    config.h
                     environmentoptions.h
                     gl_const.h
                     ilogger.h
@@ -7,17 +8,23 @@ set(HEADERS         config.h
                     mission.h
                     node.h
                     node_comparator.h
+                    safeinterval.h
+                    safeintervals.h
                     search.h
                     searchresult.h
+                    sipp.h
                     tinyxml2.h
                     xmllogger.h)
 
-set(SOURCES         config.cpp
+set(SOURCES         A_star.cpp
+                    config.cpp
                     environmentoptions.cpp
                     map.cpp
                     mission.cpp
                     node_comparator.cpp
+                    safeintervals.cpp
                     search.cpp
+                    sipp.cpp
                     tinyxml2.cpp
                     xmllogger.cpp)
 

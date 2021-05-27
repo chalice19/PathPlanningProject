@@ -51,6 +51,8 @@ bool Config::getConfig(const char *FileName)
         value = element->GetText();
     std::transform(value.begin(), value.end(), value.begin(), ::tolower);
 
+    std::cout << "Value of '" << CNS_TAG_ST << "' tag (algorithm name) is " << value << std::endl;
+
     if (value == CNS_SP_ST_BFS) {
         N = 4;
         SearchParams = new double[N];
@@ -132,11 +134,17 @@ bool Config::getConfig(const char *FileName)
             }
         }
     }
+    else if (value == CNS_SP_ST_SIPP) {
+        N = 4;
+        SearchParams = new double[N];
+        SearchParams[CN_SP_ST] = CN_SP_ST_SIPP;
+    }
     else {
         std::cout << "Error! Value of '" << CNS_TAG_ST << "' tag (algorithm name) is not correctly specified."
                   << std::endl;
         std::cout << "Supported algorithm's names are: '" << CNS_SP_ST_BFS << "', '" << CNS_SP_ST_DIJK << "', '"
-                  << CNS_SP_ST_ASTAR << "', '" << CNS_SP_ST_TH << "', '" << CNS_SP_ST_JP_SEARCH << "'." << std::endl;
+                  << CNS_SP_ST_ASTAR << "', '" << CNS_SP_ST_TH << "', '" << CNS_SP_ST_JP_SEARCH << "'."
+                  << CNS_SP_ST_SIPP << "'." << std::endl;
         return false;
     }
 

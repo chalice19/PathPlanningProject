@@ -48,11 +48,12 @@ void Mission::createEnvironmentOptions()
 void Mission::createSearch()
 {
     search.setSearchType(config.SearchParams[CN_SP_ST]);
+    safe_intervals.compute_safe_intervals(fileName, map);
 }
 
 void Mission::startSearch()
 {
-    sr = search.startSearch(logger, map, options);
+    sr = search.startSearch(logger, map, options, safe_intervals);
 }
 
 void Mission::printSearchResultsToConsole()
