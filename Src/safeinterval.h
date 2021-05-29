@@ -2,8 +2,8 @@
 #define SAFEINTERVAL_H
 
 struct SafeInterval {
-    unsigned int begin;
-    signed int end;
+    int begin;
+    int end;
 };
 
 #endif

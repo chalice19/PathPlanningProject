@@ -22,7 +22,7 @@ SearchResult A_star::startSearch(ILogger *Logger, const Map &map, const Environm
     Node start{.i = map.get_start_i(), .j = map.get_start_j(),
             .F = 0, .g = 0, .H = 0, .parent = nullptr};
 
-    start.H = calculate_heuristic(start.i, start.j, goal_i, goal_j, options.metrictype);
+    start.H = calculate_heuristic(start.i, start.j, goal_i, goal_j, options.metrictype, search_type);
     start.F = start.H;
 
     open_list.insert(start);
@@ -62,7 +62,7 @@ SearchResult A_star::startSearch(ILogger *Logger, const Map &map, const Environm
             int node_j = map_index % map.getMapWidth();
             double edge_weight = calculate_distance(node_i, node_j, current_node->i, current_node->j);
 
-            double h = calculate_heuristic(node_i, node_j, goal_i, goal_j, options.metrictype);
+            double h = calculate_heuristic(node_i, node_j, goal_i, goal_j, options.metrictype, search_type);
             double g = current_node->g + edge_weight;
             open_list.emplace(Node {.i = node_i, .j = node_j, .F = g + h,
                     .g = g, .H = h, .parent = current_node});
@@ -126,10 +126,9 @@ std::vector<int> A_star::get_successors(const Node &node, const Map &map, const 
 
 void A_star::makePrimaryPath(Node& curNode)
 {
+    sresult.pathlength = curNode.g;
     lppath.push_back(curNode);
     while (curNode.parent) {
-        sresult.pathlength += calculate_distance(curNode.i, curNode.j,
-                                                 curNode.parent->i, curNode.parent->j);
         curNode = *curNode.parent;
         lppath.push_front(curNode);
     }
@@ -169,7 +168,7 @@ void A_star::makeSecondaryPath()
 }
 
 
-double A_star::calculate_heuristic(int i1, int j1, int i2, int j2, int type) const
+double A_star::calculate_heuristic(int i1, int j1, int i2, int j2, int type, int search_type) const
 {
     if (search_type == CN_SP_ST_DIJK)
         return 0;
@@ -192,6 +191,7 @@ double A_star::calculate_heuristic(int i1, int j1, int i2, int j2, int type) con
     return 0;
 }
 
+
 double A_star::calculate_distance(int i1, int j1, int i2, int j2) const {
     int dx = std::abs(i1 - i2);
     int dy = std::abs(j1 - j2);
@@ -204,6 +204,7 @@ double A_star::calculate_distance(int i1, int j1, int i2, int j2) const {
         return std::sqrt(dx * dx + dy * dy);
     }
 }
+
 
 bool A_star::is_cell_passable(int i, int j, const Map &map) const {
     if (i >= 0 && i < map.getMapHeight() &&

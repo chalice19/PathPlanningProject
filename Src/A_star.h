@@ -50,7 +50,7 @@ protected:
     void makeSecondaryPath();   // uses lppath, so it should be called after makePrimaryPath()
 
     std::vector<int> get_successors(const Node &node, const Map& map, const EnvironmentOptions &options) const;
-    double calculate_heuristic(int i1, int j1, int i2, int j2, int type) const;
+    double calculate_heuristic(int i1, int j1, int i2, int j2, int type, int search_type) const;
     double calculate_distance(int i1, int j1, int i2, int j2) const;
     bool is_cell_passable(int i, int j, const Map& map) const;
 };

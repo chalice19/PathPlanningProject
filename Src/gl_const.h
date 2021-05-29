@@ -45,6 +45,10 @@
             #define CNS_TAG_POINT   "node"
             #define CNS_TAG_CLOSE   "close"
 
+    #define CNS_TAG_DO             "dynamicobstacles"
+        #define CNS_TAG_NUM         "number"
+        #define CNS_TAG_OBST        "obstacle"
+
 //XML tags' attributes
     #define CNS_TAG_ATTR_NUMOFSTEPS     "numberofsteps"
     #define CNS_TAG_ATTR_NODESCREATED   "nodescreated"

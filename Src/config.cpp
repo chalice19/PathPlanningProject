@@ -63,7 +63,7 @@ bool Config::getConfig(const char *FileName)
         SearchParams = new double[N];
         SearchParams[CN_SP_ST] = CN_SP_ST_DIJK;
     }
-    else if (value == CNS_SP_ST_ASTAR || value == CNS_SP_ST_JP_SEARCH || value == CNS_SP_ST_TH) {
+    else if (value == CNS_SP_ST_ASTAR || value == CNS_SP_ST_JP_SEARCH || value == CNS_SP_ST_TH || value == CNS_SP_ST_SIPP) {
         N = 7;
         SearchParams = new double[N];
         SearchParams[CN_SP_ST] = CN_SP_ST_ASTAR;
@@ -71,6 +71,8 @@ bool Config::getConfig(const char *FileName)
             SearchParams[CN_SP_ST] = CN_SP_ST_JP_SEARCH;
         else if (value == CNS_SP_ST_TH)
             SearchParams[CN_SP_ST] = CN_SP_ST_TH;
+        else if (value == CNS_SP_ST_SIPP)
+            SearchParams[CN_SP_ST] = CN_SP_ST_SIPP;
         element = algorithm->FirstChildElement(CNS_TAG_HW);
         if (!element) {
             std::cout << "Warning! No '" << CNS_TAG_HW << "' tag found in algorithm section." << std::endl;
@@ -133,11 +135,6 @@ bool Config::getConfig(const char *FileName)
                 SearchParams[CN_SP_BT] = CN_SP_BT_GMAX;
             }
         }
-    }
-    else if (value == CNS_SP_ST_SIPP) {
-        N = 4;
-        SearchParams = new double[N];
-        SearchParams[CN_SP_ST] = CN_SP_ST_SIPP;
     }
     else {
         std::cout << "Error! Value of '" << CNS_TAG_ST << "' tag (algorithm name) is not correctly specified."
