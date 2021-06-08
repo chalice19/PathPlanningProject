@@ -99,21 +99,29 @@ void XmlLogger::writeToLogMap(const Map &map, const std::list<Node> &path)
     int iterate = 0;
     bool inPath;
     std::string str;
+
     for (int i = 0; i < map.getMapHeight(); ++i) {
         XMLElement *element = doc.NewElement(CNS_TAG_ROW);
         element->SetAttribute(CNS_TAG_ATTR_NUM, iterate);
 
         for (int j = 0; j < map.getMapWidth(); ++j) {
             inPath = false;
-            for(std::list<Node>::const_iterator it = path.begin(); it != path.end(); it++)
+            int count = 0;
+            for (std::list<Node>::const_iterator it = path.begin(); it != path.end(); it++)
                 if(it->i == i && it->j == j) {
                     inPath = true;
-                    break;
+                    ++count;
+//                    break;
                 }
-            if (!inPath)
-                str += std::to_string(map.getValue(i,j));
-            else
-                str += CNS_OTHER_PATHSELECTION;
+            if (!inPath) {
+                str += std::to_string(map.getValue(i, j));
+            } else {
+                if (count > 1) {
+                    str += std::to_string(count);
+                } else {
+                    str += CNS_OTHER_PATHSELECTION;
+                }
+            }
             str += CNS_OTHER_MATRIXSEPARATOR;
         }
 

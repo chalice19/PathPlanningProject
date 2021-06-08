@@ -40,36 +40,31 @@ bool SafeIntervals::compute_safe_intervals(const char *FileName, const Map &map)
         return false;
     }
 
-    if (value == CNS_TAG_NUM) {
-        stream << element->GetText();
-        if (!((stream >> size) && (size > 0))) {
-            std::cout << "Warning! Invalid value of '" << CNS_TAG_NUM
-                      << "' tag encountered (or could not convert to integer)." << std::endl;
-            std::cout << "Value of '" << CNS_TAG_NUM << "' tag should be an integer >=0" << std::endl;
-            std::cout << "Continue reading XML and hope correct value of '" << CNS_TAG_NUM
-                      << "' tag will be encountered later..." << std::endl;
-        }
+    element = dyn_obstacles->FirstChildElement(CNS_TAG_NUM);
+    stream << element->GetText();
+    if (!((stream >> size) && (size > 0))) {
+        std::cout << "Error! Invalid value of '" << CNS_TAG_NUM
+                  << "' tag encountered (or could not convert to integer)." << std::endl;
+        std::cout << "Value of '" << CNS_TAG_NUM << "' tag should be an integer >=0" << std::endl;
+        return false;
     }
 
     element = dyn_obstacles->FirstChildElement(CNS_TAG_OBST);
-    for (node = element->FirstChildElement(CNS_TAG_POINT); node; node = node->NextSiblingElement()) {
-        int i = -1, j = -1, t = -1;
-        i = node->IntAttribute("y", i);
-        j = node->IntAttribute("x", j);
-        t = node->IntAttribute("time", t);
-//
-//        stream << element->Attribute("x");
-//        stream >> j;
-//        stream << element->Attribute("y");
-//        stream >> i;
-//        stream << element->Attribute("t");
-//        stream >> t;
 
+    for (int i = 0; i < size; ++i) {
+        for (node = element->FirstChildElement(CNS_TAG_POINT); node; node = node->NextSiblingElement()) {
+            int i = -1, j = -1, t = -1;
+            i = node->IntAttribute("y", i);
+            j = node->IntAttribute("x", j);
+            t = node->IntAttribute("time", t);
 
-        if (!insert_interval(i, j, t, map)) {
-            std::cout << "Error! Could not save obstacle's trajectory!" << std::endl;
-            return false;
+//            if (!insert_interval(i, j, t, map)) {
+//                std::cout << "Error! Could not save obstacle's trajectory!" << std::endl;
+//                return false;
+//            }
         }
+
+        element = element->NextSiblingElement();
     }
     return true;
 }
@@ -107,8 +102,8 @@ bool SafeIntervals::insert_interval(int i, int j, int t, const Map &map) {
     }
 
     if (t < interval->begin) {
-        std::cout << "Error! Obstacles collision on (" << j << ", " << i << ") at time " << t << "!" << std::endl;
-        return false;
+//        std::cout << "Warning! Obstacles collision on (" << j << ", " << i << ") at time " << t << "!" << std::endl;
+        return true;
     }
 
     if (t == interval->begin) {
@@ -116,7 +111,7 @@ bool SafeIntervals::insert_interval(int i, int j, int t, const Map &map) {
         return true;
     }
     if (t == interval->end) {
-        interval->end -= 2;
+        interval->end -= 1;
         return true;
     }
 
@@ -125,4 +120,23 @@ bool SafeIntervals::insert_interval(int i, int j, int t, const Map &map) {
     interval->begin = t + 1;
 
     return true;
+}
+
+
+bool SafeIntervals::is_there_obstacle(int i, int j, int t, const Map &map) const {
+    if (map.CellIsObstacle(i, j)) {
+        return true;
+    }
+
+    const std::list<SafeInterval>& list_of_intervals = get_intervals(i, j, map);
+    auto interval = list_of_intervals.begin();
+    while (interval != list_of_intervals.end() && interval->end < t) {
+        ++interval;
+    }
+
+    if (t < interval->begin) {
+        return true;
+    }
+
+    return false;
 }

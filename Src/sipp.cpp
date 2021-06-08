@@ -37,11 +37,12 @@ SearchResult Sipp::startSearch(ILogger *Logger, const Map &map,
         open_list.erase(min_node);
 
         if (current_node->i == goal_i && current_node->j == goal_j) {
+            sresult.pathfound = true;
+            sresult.pathlength = current_node->g;
+
             makePrimaryPath(*current_node);
             makeSecondaryPath();
 
-            sresult.pathfound = true;
-//            sresult.pathlength = current_node->g;
             sresult.lppath = &lppath;
             sresult.hppath = &hppath;
 
@@ -88,8 +89,7 @@ std::vector<Node> Sipp::get_successors_sipp(Node &node, const Map &map,
     for (auto global_index : motion_successors) {
         int i = global_index / map.getMapWidth();
         int j = global_index % map.getMapWidth();
-//        consider motions only of cost 1
-//        auto motion_time = (int)calculate_distance(i, j, node.i, node.j);
+//        we consider motions only of cost 1
         int motion_time = 1;
         int start_t = node.g + motion_time;
         int end_t = (safe_intervals.get_interval(node.i, node.j, node.si_i, map)).end;
@@ -104,6 +104,12 @@ std::vector<Node> Sipp::get_successors_sipp(Node &node, const Map &map,
 
             if (si_start <= end_t && si_end >= start_t) {
                 int t = std::max(start_t, si_start);
+
+                if (safe_intervals.is_there_obstacle(i, j, t - motion_time, map) &&
+                    safe_intervals.is_there_obstacle(node.i, node.j, t, map)) {
+                    continue;
+                }
+
                 // add to successors state i, j with time t and safe interval si_i;
                 successors.emplace_back(Node{.i = i, .j = j, .F = 0, .g = t, .H = 0,
                                              .parent = nullptr, .si_i = si_i});
@@ -120,4 +126,18 @@ std::vector<Node> Sipp::get_successors_sipp(Node &node, const Map &map,
 int Sipp::get_global_index(int i, int j, int si, const Map &map) const {
     int num_of_cells = map.getMapHeight() * map.getMapWidth();
     return si * num_of_cells + map.get_global_index(i, j);
+}
+
+
+void Sipp::makePrimaryPath(Node& curNode) {
+    lppath.push_back(curNode);
+
+    while (curNode.parent) {
+        double waiting = curNode.g - curNode.parent->g;
+        curNode = *curNode.parent;
+
+        for (int i = 0; i < waiting; ++i) {
+            lppath.push_front(curNode);
+        }
+    }
 }

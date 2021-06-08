@@ -46,7 +46,7 @@ protected:
     std::set<Node, NodeComparator>  open_list;
     std::unordered_map<int, Node>   close_list;
 
-    void makePrimaryPath(Node& curNode);
+    virtual void makePrimaryPath(Node& curNode);
     void makeSecondaryPath();   // uses lppath, so it should be called after makePrimaryPath()
 
     std::vector<int> get_successors(const Node &node, const Map& map, const EnvironmentOptions &options) const;

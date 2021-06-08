@@ -18,6 +18,9 @@ protected:
     std::vector<Node> get_successors_sipp(Node &node, const Map &map,
                                           const EnvironmentOptions &options, const SafeIntervals &safe_intervals) const;
     int get_global_index(int i, int j, int si, const Map &map) const;
+
+
+    virtual void makePrimaryPath(Node& curNode) override;
 };
 
 #endif

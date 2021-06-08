@@ -7,6 +7,7 @@ Search::~Search() {}
 
 void Search::setSearchType(int type) {
     search_type = type;
+    a_star.setSearchType(search_type);
 }
 
 
@@ -15,7 +16,6 @@ SearchResult Search::startSearch(ILogger *Logger, const Map &map,
                                  const SafeIntervals &safe_intervals)
 {
     if (search_type == CN_SP_ST_DIJK || search_type == CN_SP_ST_ASTAR) {
-        a_star.setSearchType(search_type);
         return a_star.startSearch(Logger, map, options);
     }
 

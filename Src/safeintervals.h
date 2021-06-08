@@ -17,6 +17,7 @@ public:
 
     const std::list<SafeInterval>& get_intervals(int i, int j, const Map &map) const;
     const SafeInterval& get_interval(int i, int j, int si_i, const Map &map) const;
+    bool is_there_obstacle(int i, int j, int t, const Map &map) const;
 
     int inf_time;
 
