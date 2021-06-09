@@ -58,10 +58,10 @@ bool SafeIntervals::compute_safe_intervals(const char *FileName, const Map &map)
             j = node->IntAttribute("x", j);
             t = node->IntAttribute("time", t);
 
-//            if (!insert_interval(i, j, t, map)) {
-//                std::cout << "Error! Could not save obstacle's trajectory!" << std::endl;
-//                return false;
-//            }
+            if (!insert_interval(i, j, t, map)) {
+                std::cout << "Error! Could not save obstacle's trajectory!" << std::endl;
+                return false;
+            }
         }
 
         element = element->NextSiblingElement();
