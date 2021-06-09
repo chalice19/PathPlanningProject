@@ -41,7 +41,7 @@
         <metrictype>euclidean</metrictype>
         <breakingties>g-max</breakingties>
         <hweight>1</hweight>
-        <allowdiagonal>true</allowdiagonal>
+        <allowdiagonal>false</allowdiagonal>
         <cutcorners>true</cutcorners>
         <allowsqueeze>true</allowsqueeze>
     </algorithm>
@@ -50,4 +50,28 @@
         <logpath />
         <logfilename />
     </options>
+    <dynamicobstacles>
+        <number>2</number>
+        <obstacle>
+            <node x="9" y="18" time="5"/>
+            <node x="9" y="17" time="6"/>
+            <node x="9" y="16" time="7"/>
+            <node x="9" y="15" time="8"/>
+            <node x="9" y="14" time="9"/>
+            <node x="9" y="13" time="10"/>
+            <node x="9" y="12" time="11"/>
+            <node x="9" y="11" time="12"/>
+            <node x="9" y="10" time="13"/>
+            <node x="9" y="9" time="14"/>
+        </obstacle>
+        <obstacle>
+            <node x="12" y="15" time="5"/>
+            <node x="11" y="15" time="6"/>
+            <node x="10" y="15" time="7"/>
+            <node x="9" y="15" time="8"/>
+            <node x="8" y="15" time="9"/>
+            <node x="7" y="15" time="10"/>
+            <node x="6" y="15" time="11"/>
+        </obstacle>
+    </dynamicobstacles>
 </root>
